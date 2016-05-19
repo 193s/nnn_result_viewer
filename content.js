@@ -8,7 +8,7 @@ var updateList = function(month) {
       return;
     };
     var subject_ok = -1;
-    $(this).find('.comp a').each(function(cid) {
+    $(this).find('.comp a, .normal a').each(function(cid) {
       var x = $(this);
       var title = x.text().replace(/^\s+|\s+$/g, '');
       var i = 0;
@@ -21,7 +21,7 @@ var updateList = function(month) {
       if (limit <= month) {
         var base = x.parent().parent();
         var c_status = base.find('span').text();
-        if (c_status == '完了') {
+        if (c_status == '完了' || c_status == 'レポート提出済み') {
           base.css('background-color', '#d9edf7');
           if (subject_ok == -1) subject_ok = 1;
         }
