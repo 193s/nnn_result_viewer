@@ -1,0 +1,17 @@
+{
+  "name": "secure.nnn.ed.jp result viewer",
+  "description": "",
+  "version": "1.0",
+  "permissions": [],
+  "content_scripts": [
+    {
+    "matches": [
+      "https://secure.nnn.ed.jp/mypage/result/pc/list/index*"
+    ],
+    "all_frames": true,
+    "js": ["jquery-2.2.3.min.js", "data.js", "content.js"],
+    "run_at": "document_end"
+    }
+  ],
+  "manifest_version": 2
+}
