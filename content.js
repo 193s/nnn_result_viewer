@@ -24,13 +24,17 @@ var updateList = function(month) {
         var c_status = base.find('span').text();
         if (c_status == '完了' || c_status == 'レポート提出済み') {
           base.css('background-color', '#d9edf7');
-          if (subject_ok == -1) subject_ok = 1;
-          ret.num_ok += 1;
+          if (limit == month) {
+            if (subject_ok == -1) subject_ok = 1;
+            ret.num_ok += 1;
+          }
         }
         else {
           base.css('background-color', '#f2dede');
-          subject_ok = 0;
-          ret.num_ng += 1;
+          if (limit == month) {
+            subject_ok = 0;
+            ret.num_ng += 1;
+          }
         }
       }
     });
