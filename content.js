@@ -13,7 +13,7 @@ if (location.pathname.endsWith('/unit')) {
     var text = $(this).children().children().eq(1).text().trim();
     totaltime += convertTimeToSeconds(text.split(' ').slice(-1)[0]);
   });
-  $('#result_unit_movie h1').append(' - ' + convertSecondsToTime(totaltime));
+  $('#result_unit_movie h1, #report_unit_movie h1').append(' - ' + convertSecondsToTime(totaltime));
 }
 else {
   var updateList = function(month) {
