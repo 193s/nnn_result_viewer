@@ -43,4 +43,5 @@ var data = {
   // ???
   '総合的な学習1': {}
 };
-var months = [4, 5, 6, 7, 8, 9, 10, 11, 12].slice((new Date()).getMonth() - 3);
+var months = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+var months_rest = months.slice((new Date()).getMonth() - 3);

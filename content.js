@@ -47,7 +47,7 @@ var updateList = function(month) {
 };
 // dropdown
 var select_tag = $('<select>');
-months.forEach(function(x) {
+months_rest.forEach(function(x) {
   select_tag.append( $('<option>').text( x + '月').val(x) );
 });
 select_tag.change(function() {
@@ -56,7 +56,7 @@ select_tag.change(function() {
 });
 $('.list').before(select_tag);
 
-var ret = updateList(months[0]);
+var ret = updateList(months_rest[0]);
 var num_all = ret.num_ok + ret.num_ng;
 // div#contents ul.list li ul li span
 $('.list').before($('<ul>').addClass('list')
