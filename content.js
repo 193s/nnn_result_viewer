@@ -1,10 +1,11 @@
 var updateList = function(month) {
+  var ret = { num_ok: 0, num_ng: 0 };
   var list = $('.list');
   list.children().each(function() {
     var subject = $(this).children().eq(0).text();
     subject = subject.replace('Ⅰ', '1').replace('Ｂ', 'B').replace('Ａ', 'A');
     if (!data[subject]) {
-      console.error('[error] unknown subbect:', JSON.stringify(subject));
+      console.error('[error] unknown subject:', JSON.stringify(subject));
       return;
     };
     var subject_ok = -1;
@@ -24,10 +25,12 @@ var updateList = function(month) {
         if (c_status == '完了' || c_status == 'レポート提出済み') {
           base.css('background-color', '#d9edf7');
           if (subject_ok == -1) subject_ok = 1;
+          ret.num_ok += 1;
         }
         else {
           base.css('background-color', '#f2dede');
           subject_ok = 0;
+          ret.num_ng += 1;
         }
       }
     });
@@ -40,6 +43,7 @@ var updateList = function(month) {
         break;
     }
   });
+  return ret;
 };
 // dropdown
 var select_tag = $('<select>');
@@ -52,4 +56,21 @@ select_tag.change(function() {
 });
 $('.list').before(select_tag);
 
-updateList(months[0]);
+var ret = updateList(months[0]);
+var num_all = ret.num_ok + ret.num_ng;
+// div#contents ul.list li ul li span
+$('.list').before($('<ul>').addClass('list')
+  .append($('<li>')
+  .append($('<ul>')
+  .append($('<li>')
+    .append($('<p>').append($('<a>').text(ret.num_ok + ' / ' + num_all)))
+    .append(
+      $('<span>')
+      .addClass('important')
+      .text(Math.round(100.0 * ret.num_ok / num_all) + '%')
+    )
+  )
+  )
+  )
+);
+
