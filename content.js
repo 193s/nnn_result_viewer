@@ -9,11 +9,20 @@ if (location.pathname.endsWith('/unit')) {
   }
 
   var totaltime = 0;
+  var unfinished_total = 0;
+  var count_unfinished = 0;
   $('.list').each(function() {
     var text = $(this).children().children().eq(1).text().trim();
+    if ( $(this).find('.complete').size() == 0 ) {
+      unfinished_total += convertTimeToSeconds(text.split(' ').slice(-1)[0]);
+      count_unfinished += 1;
+    }
     totaltime += convertTimeToSeconds(text.split(' ').slice(-1)[0]);
   });
-  $('#result_unit_movie h1, #report_unit_movie h1').append(' - ' + convertSecondsToTime(totaltime));
+  $('#result_unit_movie h1, #report_unit_movie h1')
+    .append(' - ' + convertSecondsToTime(unfinished_total)
+          + ' / ' + convertSecondsToTime(totaltime)
+          + ' (' + count_unfinished + ')');
 }
 else {
   var updateList = function(month) {
