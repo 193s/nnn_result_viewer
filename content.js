@@ -25,57 +25,57 @@ if (location.pathname.endsWith('/unit')) {
           + ' (' + count_unfinished + ')');
 }
 else {
-  $('.list').children().each(function() {
-    var subject = $(this).children().eq(0).text();
+  function parseSubjectName(subject) {
     subject = subject.replace('Ⅰ', '1').replace('Ｂ', 'B').replace('Ａ', 'A');
     if (!data[subject]) {
       console.error('[error] unknown subject:', JSON.stringify(subject));
-      return;
-    };
+      return null;
+    }
+    return subject;
+  }
+  function getDeadline(subject, cid) {
+    var i = 0;
+    for (i=0; i<months.length; i++) {
+      if (data[subject][months[i]] > cid) break;
+    }
+    return months[i];
+  }
+
+  // labeling
+  $('.list').children().each(function() {
+    var subject = parseSubjectName($(this).children().eq(0).text());
+    if (subject == null) return;
     var subject_ok = -1;
     $(this).find('.comp a, .normal a').each(function(cid) {
-      var x = $(this);
-      var title = x.text().replace(/^\s+|\s+$/g, '');
-      var i = 0;
-      for (i=0; i<months.length; i++) {
-        if (data[subject][months[i]] > cid) break;
-      }
-      x.text('《' + months[i] + '月》 ' + title);
+      var title = $(this).text().replace(/^\s+|\s+$/g, '');
+      $(this).text('《' + getDeadline(subject, cid) + '月》 ' + title);
     });
   });
 
   var updateList = function(month) {
     var ret = { num_ok: 0, num_ng: 0 };
     $('.list').last().children().each(function() {
-      var subject = $(this).children().eq(0).text();
-      subject = subject.replace('Ⅰ', '1').replace('Ｂ', 'B').replace('Ａ', 'A');
-      if (!data[subject]) {
-        console.error('[error] unknown subject:', JSON.stringify(subject));
-        return;
-      };
+      var subject = parseSubjectName($(this).children().eq(0).text());
+      if (subject == null) return;
       var subject_ok = -1;
       $(this).find('.comp a, .normal a').each(function(cid) {
         var x = $(this);
         var title = x.text().replace(/^\s+|\s+$/g, '');
-        var i = 0;
-        for (i=0; i<months.length; i++) {
-          if (data[subject][months[i]] > cid) break;
-        }
-        var limit = months[i];
-        // 今月締め切り
-        if (limit <= month) {
+        var deadline = getDeadline(subject, cid);
+
+        if (deadline <= month) {
           var base = x.parent().parent();
           var c_status = base.find('span').text();
-          if (c_status == '完了' || c_status == 'レポート提出済み') {
+          if (/完了|レポート提出済み/.test(c_status)) {
             base.css('background-color', '#d9edf7');
-            if (limit == month) {
+            if (deadline == month) {
               if (subject_ok == -1) subject_ok = 1;
               ret.num_ok += 1;
             }
           }
           else {
             base.css('background-color', '#f2dede');
-            if (limit == month) {
+            if (deadline == month) {
               subject_ok = 0;
               ret.num_ng += 1;
             }
