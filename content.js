@@ -25,6 +25,8 @@ if (location.pathname.endsWith('/unit')) {
           + ' (' + count_unfinished + ')');
 }
 else {
+  var vt, vp;
+
   function parseSubjectName(subject) {
     subject = subject.replace('Ⅰ', '1').replace('Ｂ', 'B').replace('Ａ', 'A');
     if (!data[subject]) {
@@ -53,7 +55,7 @@ else {
   });
 
   var updateList = function(month) {
-    var ret = { num_ok: 0, num_ng: 0 };
+    var num_ok = 0, num_ng = 0;
     $('.list').last().children().each(function() {
       var subject = parseSubjectName($(this).children().eq(0).text());
       if (subject == null) return;
@@ -70,14 +72,14 @@ else {
             base.css('background-color', '#d9edf7');
             if (deadline == month) {
               if (subject_ok == -1) subject_ok = 1;
-              ret.num_ok += 1;
+              num_ok += 1;
             }
           }
           else {
             base.css('background-color', '#f2dede');
             if (deadline == month) {
               subject_ok = 0;
-              ret.num_ng += 1;
+              num_ng += 1;
             }
           }
         }
@@ -98,7 +100,9 @@ else {
           break;
       }
     });
-    return ret;
+    var num_all = num_ok + num_ng;
+    vt.text(num_ok + ' / ' + num_all);
+    vp.text(Math.round(100.0 * num_ok / num_all) + '%');
   };
   // dropdown
   var select_tag = $('<select>');
@@ -110,21 +114,18 @@ else {
   });
   $('.list').before(select_tag);
 
-  var ret = updateList(months_rest[0]);
-  var num_all = ret.num_ok + ret.num_ng;
-  // div#contents ul.list li ul li span
+  vt = $('<a>').text('- / -');
+  vp = $('<span>').addClass('important').text('- %');
+ // div#contents ul.list li ul li span
   $('.list').before($('<ul>').addClass('list')
     .append($('<li>')
     .append($('<ul>')
-    .append($('<li>')
-      .append($('<p>').append($('<a>').text(ret.num_ok + ' / ' + num_all)))
-      .append(
-        $('<span>')
-        .addClass('important')
-        .text(Math.round(100.0 * ret.num_ok / num_all) + '%')
-      )
+    .append($('<li>').attr('id', 'statusbar')
+      .append($('<p>').append(vt))
+      .append(vp)
     )
     )
     )
   );
+  updateList(months_rest[0]);
 }
